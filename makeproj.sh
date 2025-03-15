@@ -1,7 +1,12 @@
+#!/bin/bash
+
 mkdir $1
-
 cp -r ../Stanford_CS106B_linux/* ./$1
+ln -s $(pwd)/$1/StanfordCPPLib/libStanfordCPPLib.a $(pwd)/$1/libStanfordCPPLib.a
 
+#
+## MAKE FILE
+#
 echo "PROGRAM = $1
 OBJECTS = $1.o
 
@@ -30,7 +35,16 @@ clean scratch: tidy
 	rm -f *.o *.a \$(PROGRAM)
 " >> ./$1/Makefile
 
-#/home/dato/assignments/ass1
-#/home/dato/assignments/Stanford_CS106B_linux/StanfordCPPLib/libStanfordCPPLib.a
+#
+## CPP FILE
+#
+echo "#include <iostream>
+#include \"./StanfordCPPLib/console.h\"
+using namespace std;
 
-ln -s $(pwd)/$1/StanfordCPPLib/libStanfordCPPLib.a $(pwd)/$1/libStanfordCPPLib.a
+int main() {
+
+    return 0;
+}
+" >> ./$1/$1.cpp
+
