@@ -13,7 +13,7 @@
 #include <iostream>
 #include <cctype>
 #include <fstream>
-using namespace std;
+using std::string;
 
 /* struct for storing file stats */
 struct FileInfo {
@@ -27,28 +27,27 @@ FileInfo newFileInfo(int words, int sentences, int syllables);
 FileInfo parseFile(TokenScanner &scanner);
 
 int getSyllableCount(string token);
-int calcGrade(FileInfo *fi);
+double calcGrade(FileInfo *fi);
 void printInfo(FileInfo *fi);
 bool isPunct(char ch);
 
 int main() {
-    string fileName;
-    std::ifstream input;
+    const string SENTINEL = "-1";
     while (true) {
-        fileName = getLine("Enter file name: ");
-        input = std::ifstream{ fileName };
+        string fileName = getLine("Enter file name: ");
+        if (fileName == SENTINEL) break;
+        std::ifstream input{ fileName };
         if (!input) {
             std::cout << "Error: file doesn't exist" << std::endl;
             continue;
         }
-        break;
-    }
 
-    TokenScanner scanner{ input };
-    scanner.ignoreWhitespace();
-    scanner.addWordCharacters("'\"-~");
-    FileInfo fi = parseFile(scanner);
-    printInfo(&fi);
+        TokenScanner scanner{ input };
+        scanner.ignoreWhitespace();
+        scanner.addWordCharacters("'");
+        FileInfo fi = parseFile(scanner);
+        printInfo(&fi);
+    }
 
     return 0;
 }
@@ -72,8 +71,10 @@ FileInfo parseFile(TokenScanner &scanner) {
     while (scanner.hasMoreTokens()) {
         string token = scanner.nextToken();
 
+        if (token.length() == 1 && token[0] == '"') continue;
+
         // check if token is a word
-        if (isalpha(token[0]) || (token[0] == '"' && isalpha(token[1]))) {
+        if (isalpha(token[0])) {
             wordCount++;
             syllableCount += getSyllableCount(token);
             continue;
@@ -98,8 +99,8 @@ int getSyllableCount(string token) {
     string vow = "aeiouy";
     int cnt = 0;
     for (int i = 0; i < token.length(); i++) {
-        if (vow.find(tolower(token[i]) != string::npos)) {
-            if (i == 0 || vow.find(tolower(token[i - 1]) != string::npos)) {
+        if (vow.find(tolower(token[i])) != string::npos) {
+            if (i == 0 || vow.find(tolower(token[i - 1])) == string::npos) {
                 cnt++;
             }
         }
@@ -113,13 +114,13 @@ int getSyllableCount(string token) {
     return cnt > 1 ? cnt : 1;
 }
 
-int calcGrade(FileInfo *fi) {
+double calcGrade(FileInfo *fi) {
     const double C0 = -15.59;
     const double C1 = 0.39;
     const double C2 = 11.8;
 
     return C0 + C1 * ((double) fi->wordNum / fi->sentenceNum) +
-    C2 * ((double) fi->syllableNum / fi->wordNum);
+            C2 * ((double) fi->syllableNum / fi->wordNum);
 }
 
 void printInfo(FileInfo *fi) {
