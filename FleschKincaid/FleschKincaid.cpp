@@ -32,6 +32,7 @@ void printInfo(FileInfo *fi);
 bool isPunct(char ch);
 
 int main() {
+    std::cout << getSyllableCount("applepie sauce") << std::endl;
     const string SENTINEL = "-1";
     while (true) {
         string fileName = getLine("Enter file name: ");
@@ -62,7 +63,9 @@ FileInfo newFileInfo(int words=0, int sentences=0, int syllables=0) {
     };
 }
 
-// parse the file and get data
+/* parse the file and get data
+*    returns the word/sentence/syllable counts grouped together in a struct
+*/
 FileInfo parseFile(TokenScanner &scanner) {
     int wordCount = 0;
     int sentenceCount = 0;
@@ -107,7 +110,10 @@ int getSyllableCount(string token) {
     }
 
     // dont't count the silent vowel 'e'
-    if (cnt > 1 && tolower(token[token.length() - 1]) == 'e') {
+    if (token.length() > 2 && cnt > 1 &&
+        tolower(token[token.length() - 1]) == 'e' &&
+        vow.find(tolower(token[token.length() - 2])) == string::npos)
+    {
         cnt--;
     }
 
