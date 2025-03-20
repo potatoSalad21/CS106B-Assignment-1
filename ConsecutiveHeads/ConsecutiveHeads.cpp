@@ -7,8 +7,8 @@
  * [TODO: rewrite the documentation]
  */
 
-#include "./StanfordCPPLib/console.h"
-#include "./StanfordCPPLib/random.h"
+#include "StanfordCPPLib/console.h"
+#include "StanfordCPPLib/random.h"
 #include <iostream>
 #include <string>
 using std::string;

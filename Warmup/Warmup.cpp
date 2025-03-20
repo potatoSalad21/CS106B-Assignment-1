@@ -11,8 +11,8 @@
 
 #include <iostream>
 #include <string>
-#include "./StanfordCPPLib/console.h"
-#include "./StanfordCPPLib/simpio.h"
+#include "StanfordCPPLib/console.h"
+#include "StanfordCPPLib/simpio.h"
 using namespace std;
 
 /* Constants */
